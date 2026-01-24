@@ -1,9 +1,8 @@
-# dev version
-## WSMC
+# WSMC
 Enable Websocket support for Minecraft Java.
 Since most CDN providers(at least for their free tier) do not support raw TCP proxy, with the help of this mod, the owner can now hide the server behind a CDN and let the players connect via WebSocket, thus preventing DDoS attacks.
 
-For Minecraft Forge, Neoforge and Fabric:
+For Minecraft Forge, Neoforge, Fabric and Paper/Spigot:
 * 1.21.11
 * 1.20.5 to 1.21.4, inclusive. 1.21.5 to 1.21.10 are known to work.
 * 1.20.2, 1.20.3, 1.20.4
@@ -116,9 +115,38 @@ cd wsmc/forge
 ./gradlew build
 ```
 
+### Compile Paper artifact
+```
+git clone https://github.com/rikka0w0/wsmc.git
+cd wsmc/paper
+./gradlew build
+```
+
 ### To specify JRE path (Since 1.18.1, Minecraft requires Java 17):
 ```
 ./gradlew -Dorg.gradle.java.home=/path_to_jdk_directory <commands>
 ```
 * Since 1.18.1, Minecraft requires Java 17
 * Since 1.20.5, Minecraft requires Java 21
+
+## Paper / Spigot Version
+WSMC runs as a standard Bukkit/Spigot/Paper plugin.
+
+### Installation
+1. Download the `wsmc-paper-x.x.x.jar`.
+2. Place it in your server's `plugins` folder.
+3. Restart the server.
+
+### Configuration
+WSMC for Paper uses standard Java System Properties for configuration, just like the Forge/Fabric versions. You can set these properties in your server startup script (e.g., `start.bat` or `start.sh`) by adding `-Dkey=value` before `-jar`.
+
+Example:
+```bash
+java -Dwsmc.wsmcEndpoint=/mc -Dwsmc.debug=true -jar paper.jar
+```
+
+### Features
+*   **Protocol Coexistence**: Automatically detects and handles both standard Minecraft TCP connections and WebSocket connections on the same port.
+*   **Performance**: Uses Netty's low-level API to inject handlers, ensuring minimal overhead.
+*   **Real IP Support**: Supports resolving player's real IP address from `X-Forwarded-For` header when behind a reverse proxy.
+*   **Compatibility**: Designed to work alongside other plugins. It does not modify the server jar or use Mixins, making it highly compatible with various Paper/Spigot versions.

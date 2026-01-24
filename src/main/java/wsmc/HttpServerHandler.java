@@ -1,5 +1,6 @@
 package wsmc;
 
+import java.net.InetSocketAddress;
 import java.util.function.Consumer;
 
 import io.netty.buffer.Unpooled;
@@ -13,10 +14,10 @@ import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpVersion;
-import io.netty.handler.codec.http.LastHttpContent;
 import io.netty.handler.codec.http.websocketx.WebSocketServerHandshaker;
 import io.netty.handler.codec.http.websocketx.WebSocketServerHandshakerFactory;
 import io.netty.util.CharsetUtil;
+import wsmc.paper.IpInjection;
 
 public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 	public final static String wsmcEndpoint = System.getProperty("wsmc.wsmcEndpoint", null);
@@ -67,6 +68,14 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 			if ("Upgrade".equalsIgnoreCase(headers.get(HttpHeaderNames.CONNECTION))
 					&& "WebSocket".equalsIgnoreCase(headers.get(HttpHeaderNames.UPGRADE))
 					&& isWsmcEndpoint(endpoint)) {
+
+				String xForwardedFor = headers.get("X-Forwarded-For");
+				if (xForwardedFor != null && !xForwardedFor.isEmpty()) {
+					String clientIp = xForwardedFor.split(",")[0].trim();
+					WSMC.debug("X-Forwarded-For IP injection: " + clientIp);
+					IpInjection.inject(ctx.channel(), new InetSocketAddress(clientIp, ((InetSocketAddress) ctx.channel().remoteAddress()).getPort()));
+				}
+
 				String url = "ws://" + httpRequest.headers().get("Host") + httpRequest.uri();
 				WSMC.debug("Upgrade to: " + headers.get("Upgrade") + " for: " + url);
 
@@ -87,7 +96,7 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 					WSMC.debug("Unable to parse maxFramePayloadLength, value: " + HttpServerHandler.maxFramePayloadLength);
 				}
 
-				System.out.println("maxFramePayloadLength: " + maxFramePayloadLength);
+				WSMC.debug("maxFramePayloadLength: " + maxFramePayloadLength);
 				// Do the Handshake to upgrade connection from HTTP to WebSocket protocol
 				WebSocketServerHandshakerFactory wsFactory =
 							new WebSocketServerHandshakerFactory(url, null, true, maxFramePayloadLength);
@@ -104,19 +113,21 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 
 				// Here we assume that the server never actively sends anything before it receives anything from the client.
 			} else {
-				// Not a WebSocket upgrade request, send a default HTTP response
+				// Not a WebSocket upgrade request, send a default HTTP response and close
 				DefaultFullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1,
-						HttpResponseStatus.OK, Unpooled.copiedBuffer("HTTP default response", CharsetUtil.UTF_8));
+						HttpResponseStatus.OK, Unpooled.copiedBuffer("This is a wsmc-for-Minecraft server", CharsetUtil.UTF_8));
 				response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain; charset=UTF-8");
 				response.headers().set(HttpHeaderNames.CONTENT_LENGTH, response.content().readableBytes());
 				response.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.KEEP_ALIVE);
 
 				ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
 			}
-		} else if (msg == LastHttpContent.EMPTY_LAST_CONTENT) {
-			WSMC.debug("EMPTY_LAST_CONTENT");
 		} else {
-			WSMC.debug("HttpServerHandler got unknown incoming request: " + msg.getClass().getName());
+			// Not an HTTP request, assume it's game traffic.
+			// Remove this handler from the pipeline as it's no longer needed for this connection.
+			ctx.pipeline().remove(this);
+			// Pass the message on to the next handler (the vanilla Minecraft one).
+			ctx.fireChannelRead(msg);
 		}
 	}
 }

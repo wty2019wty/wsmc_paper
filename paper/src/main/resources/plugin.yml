@@ -1,7 +1,7 @@
 name: WSMC
-version: ${version}
-main: wsmc.bukkit.WSMCPlugin
-api-version: 1.13
-prefix: WSMC
+version: 1.0.0
+main: wsmc.paper.PaperEntry
+api-version: 1.20
+description: Enable Websocket support for Minecraft Java.
 authors: [wty2019wty]
-description: Enable Websocket support for Minecraft Paper.
+website: https://github.com/wty2019wty/wsmc_paper

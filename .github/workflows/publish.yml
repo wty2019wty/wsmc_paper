@@ -5,7 +5,6 @@ on:
 
 env:
   java-version: '21'
-  curseforge-id: 920581
 
 jobs:
   build:
@@ -27,13 +26,12 @@ jobs:
         java-version: ${{ env.java-version }}
         distribution: 'temurin'
 
-    - name: Build Fabric
+    - name: Build Paper
       run: |
-        cd fabric
+        cd paper
         chmod +x ./gradlew
-        ./gradlew exportProperties build
+        ./gradlew build
         cd ..
-
 
     - name: Get Info and Perform Substitutions
       run: |
@@ -69,17 +67,14 @@ jobs:
           echo "$1"="$2" >> $GITHUB_ENV
         }
 
-        PROPS=$(parse_gradle_props fabric/build/info/properties.txt)
+        PROPS=$(parse_gradle_props paper/gradle.properties)
         mod_version=$(get_prop_value "$PROPS" "mod_version")
         minecraft_versions_declared=$(get_prop_value "$PROPS" "minecraft_versions_declared")
         minecraft_version=$(get_prop_value "$PROPS" "minecraft_version")
         publish_prefix=$(get_prop_value "$PROPS" "publish_prefix")
         minecraft_version_range=$(get_prop_value "$PROPS" "minecraft_version_range")
-        set_action_env "GITHUB_RELEASE_TITLE" "${mod_version} for Minecraft Fabric ${minecraft_versions_declared}"
+        set_action_env "GITHUB_RELEASE_TITLE" "${mod_version} for Minecraft Paper ${minecraft_versions_declared}"
         set_action_env "GITHUB_TAG_NAME" "${mod_version}_${minecraft_version}"
-        set_action_env "CURSEFORGE_FABRIC" "${publish_prefix}-fabric"
-        set_action_env "MC_RANGE_FABRIC" "${minecraft_version_range}"
-
 
     - name: Publish to GitHub
       uses: Kir-Antipov/mc-publish@v3.3
@@ -95,4 +90,5 @@ jobs:
         github-prerelease: false
 
         files: |
-          fabric/build/libs/!(*-@(dev|sources|javadoc)).jar
+          paper/build/libs/!(*-@(dev|sources|javadoc)).jar
+
