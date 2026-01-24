@@ -3,8 +3,11 @@
 由于大多数 CDN 提供商（至少在其免费层级）不支持原始 TCP 代理，借助此模组，服主现在可以将服务器隐藏在 CDN 后面，并让玩家通过 WebSocket 连接，从而防止 DDoS 攻击。
 
 适用于 Minecraft  Paper/Spigot：
-* 仅测试1.21.11
-
+* 已测试1.20.4
+* 已测试1.21
+* 已测试1.21.5
+* 已测试1.21.9
+* 已测试1.21.11
 
 ## 当此插件安装在服务器上时：
 * 服务器将允许玩家通过 WebSocket 连接。
@@ -26,14 +29,14 @@
 * 即使您安装了此模组，原版客户端也可以加入您的服务器，请注意您拥有的其他模组可能会阻止原版客户端加入。
 * 在您的客户端上安装此模组不会阻止您加入其他原版或模组服务器。
 * 服务器仍然可以获取通过 CDN 代理的 WebSocket 加入的玩家的真实 IP。
-* 此模组与其他 TCP-WebSocket 代理（如 websocat）兼容。
+* 此模组与其他 TCP-WebSocket 代理（如 [websocat](https://github.com/vi/websocat)）兼容。
 
 ## 客户端选项
 有时 DNS 为 HTTP 主机名 (ws) 或 SNI (wss) 返回较慢的 IP。客户端可能希望控制如何解析 IP 地址。
 
 客户端可以根据需要控制 WebSocket 握手期间使用的 HTTP 主机名和 SNI：
 ```
-指定 http 主机名的不安全 WebSocket 连接：
+指定 http 主机名的不安全 WebSocket 连接(不知道工作正不正常)：
 ws://host.com@ip.ip.ip.ip
 
 指定 sni 和 http 主机名为相同值 (sni-host.com)，从 ip.ip.ip.ip 解析服务器 IP：
@@ -74,7 +77,7 @@ WSMC 作为标准的 Bukkit/Spigot/Paper 插件运行。
 
 ### 安装
 
-1. 下载 `wsmc-paper。jar`。
+1. 下载 `wsmc-paper-all.jar`。
 2. 将其放入服务器的 `plugins` 文件夹中。
 3. 重启服务器。
 
