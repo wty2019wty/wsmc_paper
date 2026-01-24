@@ -11,16 +11,21 @@ This branch is optimized for 1.20 to 1.21.11 compatibility.
 
 This mod runs standalone and does not have any dependency.
 
-## When this mod is installed on a server:
+## When this plugin is installed on a server:
 * The server would allow players to connect via WebSocket.
 * Players can still join using vanilla TCP.
 * The server accepts and handles TCP and WebSocket connections on the same listening port.
 * Without installing this mod on the client side, a player can still join a server that has this mod using vanilla TCP.
 * The server can acquire client statistics (e.g., real IP) from the WebSocket handshake..
 
-## When this mod is installed on a client:
+## How does the client connect:
+
+### Useing [rikka0w0/wsmc](https://github.com/rikka0w0/wsmc/releases)
+
 * The client can join WebSocket-enabled servers using URI like `ws://hostname.com:port/path_to_minecraft_endpoint`.
 * The client can join any servers using vanilla TCP using the old syntax, e.g. `hostname_or_ip:port`.
+
+
 
 ## Note
 * This mod does not affect any gameplay.
