@@ -69,7 +69,7 @@ wss://sni.com:host.com@ip.ip.ip.ip
 ```
 git clone https://github.com/wty2019wty/wsmc_paper
 cd wsmc/paper
-./gradlew build
+./gradlew shadowJar
 ```
 
 ## Paper / Spigot 版本
