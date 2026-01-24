@@ -26,7 +26,7 @@ public class PaperEntry extends JavaPlugin {
 
             @Override
             public void debug(String msg) {
-                paperLogger.fine(msg);
+                paperLogger.info("[DEBUG] " + msg);
             }
         });
 
