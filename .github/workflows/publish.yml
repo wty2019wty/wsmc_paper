@@ -30,7 +30,7 @@ jobs:
       run: |
         cd paper
         chmod +x ./gradlew
-        ./gradlew build
+        ./gradlew shadowJar
         cd ..
 
     - name: Get Info and Perform Substitutions

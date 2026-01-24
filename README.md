@@ -5,7 +5,6 @@
 适用于 Minecraft  Paper/Spigot：
 * 仅测试1.21.11
 
-  
 
 ## 当此插件安装在服务器上时：
 * 服务器将允许玩家通过 WebSocket 连接。
@@ -92,4 +91,4 @@ java -Dwsmc.wsmcEndpoint=/mc -Dwsmc.debug=true -jar paper.jar
 *   **协议共存**：自动检测并处理同一端口上的标准 Minecraft TCP 连接和 WebSocket 连接。
 *   **性能**：使用 Netty 的底层 API 注入处理程序，确保开销最小。
 *   **真实 IP 支持**：支持在反向代理后从 `X-Forwarded-For` 头解析玩家的真实 IP 地址。
-*   **兼容性**：旨在与其他插件一起工作。它不修改服务器 jar 或使用 Mixins，~~使其与各种 Paper/Spigot 版本高度兼容。~~（仅支持 paper1.21.11）
+*   **兼容性**：旨在与其他插件一起工作。它不修改服务器 jar 或使用 Mixins，使其与各种 Paper/Spigot 版本高度兼容。
