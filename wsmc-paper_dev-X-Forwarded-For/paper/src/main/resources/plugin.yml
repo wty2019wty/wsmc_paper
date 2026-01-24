@@ -1,0 +1,7 @@
+name: WSMC
+version: 1.0.0
+main: wsmc.paper.PaperEntry
+api-version: 1.20
+description: Enable Websocket support for Minecraft Java.
+authors: [rikka0w0]
+website: https://github.com/rikka0w0/wsmc

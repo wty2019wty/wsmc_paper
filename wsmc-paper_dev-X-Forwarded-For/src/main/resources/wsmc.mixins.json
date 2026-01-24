@@ -1,0 +1,18 @@
+{
+	"required": true,
+	"package": "wsmc.mixin",
+	"compatibilityLevel": "JAVA_21",
+	"refmap": "wsmc.refmap.json",
+	"mixins": [
+		"MixinServerConnectionListener",
+		"MixinConnection",
+		"MixinConnectionChInit"
+	],
+	"client": [
+		"MixinConnectScreen",
+		"MixinConnectScreenThread",
+		"MixinServerAddress",
+		"MixinServerStatusPinger"
+	],
+	"minVersion": "0.8"
+}
