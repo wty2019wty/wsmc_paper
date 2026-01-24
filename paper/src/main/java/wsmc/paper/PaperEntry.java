@@ -177,7 +177,7 @@ public class PaperEntry extends JavaPlugin {
         
         // If not found, try common field names
         if (channels == null) {
-            String[] possibleNames = {"channels", "f", "g", "activeChannels", "boundChannels"};
+            String[] possibleNames = {"channels", "f", "g", "h", "activeChannels", "boundChannels", "listeningChannels"};
             for (String name : possibleNames) {
                 try {
                     Field field = serverConnection.getClass().getDeclaredField(name);

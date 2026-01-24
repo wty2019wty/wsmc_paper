@@ -79,7 +79,7 @@ public class IpInjection {
 
     private static Field findAddressField(Class<?> connectionClass) throws NoSuchFieldException {
         // Try common names first
-        String[] fieldNames = {"address", "socketAddress", "remoteAddress", "k", "l", "m"}; 
+        String[] fieldNames = {"address", "socketAddress", "remoteAddress", "k", "l", "m", "n"}; 
         
         for (String name : fieldNames) {
             try {
