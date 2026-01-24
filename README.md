@@ -83,12 +83,6 @@ cd wsmc/paper
 ./gradlew build
 ```
 
-### To specify JRE path (Since 1.18.1, Minecraft requires Java 17):
-```
-./gradlew -Dorg.gradle.java.home=/path_to_jdk_directory <commands>
-```
-* Since 1.18.1, Minecraft requires Java 17
-* Since 1.20.5, Minecraft requires Java 21
 
 ## Paper / Spigot Version
 WSMC runs as a standard Bukkit/Spigot/Paper plugin.
