@@ -69,28 +69,16 @@ The configuration of this mod is passed in the "system properties". You can use 
 | wsmc.dumpBytes             | boolean  | Dump raw WebSocket binary frames. Work only if `wsmc.debug` is set to `true`.                                                                                                                | Server Client | false   | true     |
 | wsmc.maxFramePayloadLength | integer  | Maximum allowable frame payload length. Setting this value to your modpack's requirement else Netty will throw error "Max frame length of x has been exceeded".                              | Server Client | 65536   | 65536    |
 
-## Dependencies
-
-
-## For developers
-To modify and debug the code, first import the "forge" or "fabric" folder as a Gradle project in Eclipse IDE, and then run the gradle task `genEclipseRuns`.
-
-Windows users need to replace `./` and `../` with `.\` and `..\`, respectively.
-
-The codebase uses Minecraft official mapping.
-
-On the server side, if a client joins via WebSocket, its handshake request can be accessed via the vanilla `net.minecraft.network.Connection` class.
-To obtain such information, cast a Connection instance into IConnectionEx, then calls `IConnectionEx.getWsHandshakeRequest()`.
-
-This is useful for obtaining information about the original request if the Minecraft server is behind a reverse proxy (e.g. a CDN).
-For example, header `X-Forwarded-For` and `CF-IPCountry` indicate the client IP address and the client country code, respectively.
 
 
 
 
-### Compile Paper artifact
+
+
+
+## Compile Paper artifact
 ```
-git clone https://github.com/rikka0w0/wsmc.git
+git clone https://github.com/wty2019wty/wsmc_paper
 cd wsmc/paper
 ./gradlew build
 ```
