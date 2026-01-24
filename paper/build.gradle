@@ -29,13 +29,6 @@ sourceSets {
     main {
         java {
             srcDir '../src/main/java'
-            exclude 'wsmc/client/**'
-            exclude 'wsmc/mixin/**'
-            exclude 'wsmc/IWebSocketServerAddress.java'
-            exclude 'wsmc/WebSocketConnectionInfo.java'
-            exclude 'wsmc/UnitTest.java'
-            exclude 'wsmc/api/IWebSocketServerConnection.java'
-            exclude 'wsmc/IConnectionEx.java'
         }
         resources {
             srcDir '../src/main/resources'
