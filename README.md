@@ -105,4 +105,4 @@ java -Dwsmc.wsmcEndpoint=/mc -Dwsmc.debug=true -jar paper.jar
 *   **Protocol Coexistence**: Automatically detects and handles both standard Minecraft TCP connections and WebSocket connections on the same port.
 *   **Performance**: Uses Netty's low-level API to inject handlers, ensuring minimal overhead.
 *   **Real IP Support**: Supports resolving player's real IP address from `X-Forwarded-For` header when behind a reverse proxy.
-*   **Compatibility**: Designed to work alongside other plugins. It does not modify the server jar or use Mixins, making it highly compatible with various Paper/Spigot versions.
+*   ~~**Compatibility**: Designed to work alongside other plugins. It does not modify the server jar or use Mixins, making it highly compatible with various Paper/Spigot versions.~~（Only Support paper1.21.11）
