@@ -7,6 +7,7 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import wsmc.HttpServerHandler;
 import wsmc.WSMC;
+import wsmc.HttpGetSniffer;
 
 import java.util.List;
 
@@ -29,6 +30,13 @@ public class ProtocolSniffer extends ByteToMessageDecoder {
             ctx.pipeline().addAfter("wsmc_http_aggregator", "wsmc_http_handler", new HttpServerHandler(null));
             ctx.pipeline().remove(this);
         } else {
+            if (HttpGetSniffer.disableVanillaTCP) {
+                WSMC.info(ctx.channel().remoteAddress().toString() +
+                        " attemps to establish a Vanilla TCP connection which has been disabled by WSMC.");
+                ctx.close();
+                return;
+            }
+
             WSMC.debug("Detected Minecraft connection from " + ctx.channel().remoteAddress());
             ctx.pipeline().remove(this);
             out.add(in.readBytes(in.readableBytes()));
