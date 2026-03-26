@@ -5,8 +5,9 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
-import wsmc.HttpServerHandler;
-import wsmc.WSMC;
+// 1. 替换旧类导入为新类
+import wsmc.HttpServerHandlerpaper;
+import wsmc.WSMCpaper;
 import wsmc.HttpGetSniffer;
 
 import java.util.List;
@@ -24,20 +25,24 @@ public class ProtocolSniffer extends ByteToMessageDecoder {
         int magic4 = in.getUnsignedByte(in.readerIndex() + 3);
 
         if (isHttp(magic1, magic2, magic3, magic4)) {
-            WSMC.debug("Detected HTTP/WebSocket connection from " + ctx.channel().remoteAddress());
+            // 2. 替换 WSMC → WSMCpaper
+            WSMCpaper.debug("Detected HTTP/WebSocket connection from " + ctx.channel().remoteAddress());
             ctx.pipeline().addAfter(ctx.name(), "wsmc_http_codec", new HttpServerCodec());
             ctx.pipeline().addAfter("wsmc_http_codec", "wsmc_http_aggregator", new HttpObjectAggregator(65536));
-            ctx.pipeline().addAfter("wsmc_http_aggregator", "wsmc_http_handler", new HttpServerHandler(null));
+            // 3. 替换 HttpServerHandler → HttpServerHandlerpaper
+            ctx.pipeline().addAfter("wsmc_http_aggregator", "wsmc_http_handler", new HttpServerHandlerpaper(null));
             ctx.pipeline().remove(this);
         } else {
             if (HttpGetSniffer.disableVanillaTCP) {
-                WSMC.info(ctx.channel().remoteAddress().toString() +
+                // 4. 替换 WSMC → WSMCpaper
+                WSMCpaper.info(ctx.channel().remoteAddress().toString() +
                         " attemps to establish a Vanilla TCP connection which has been disabled by WSMC.");
                 ctx.close();
                 return;
             }
 
-            WSMC.debug("Detected Minecraft connection from " + ctx.channel().remoteAddress());
+            // 5. 替换 WSMC → WSMCpaper
+            WSMCpaper.debug("Detected Minecraft connection from " + ctx.channel().remoteAddress());
             ctx.pipeline().remove(this);
             out.add(in.readBytes(in.readableBytes()));
         }
@@ -46,7 +51,7 @@ public class ProtocolSniffer extends ByteToMessageDecoder {
     private boolean isHttp(int m1, int m2, int m3, int m4) {
         return m1 == 'G' && m2 == 'E' && m3 == 'T' && m4 == ' ' || // GET
                m1 == 'P' && m2 == 'O' && m3 == 'S' && m4 == 'T' || // POST
-               m1 == 'P' && m2 == 'U' && m3 == 'T' && m4 == ' ' || // PUT
+               m1 == 'P' && m2 == 'U' && m3 = 'T' && m4 == ' ' || // PUT
                m1 == 'H' && m2 == 'E' && m3 == 'A' && m4 == 'D' || // HEAD
                m1 == 'O' && m2 == 'P' && m3 == 'T' && m4 == 'I' || // OPTIONS
                m1 == 'D' && m2 == 'E' && m3 == 'L' && m4 == 'E' || // DELETE

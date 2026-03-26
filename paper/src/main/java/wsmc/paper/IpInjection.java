@@ -2,7 +2,8 @@ package wsmc.paper;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
-import wsmc.WSMC;
+// 1. 修正导入：WSMC → WSMCpaper
+import wsmc.WSMCpaper;
 
 import java.lang.reflect.Field;
 import java.net.SocketAddress;
@@ -18,17 +19,20 @@ public class IpInjection {
             
             if (connectionHandler == null) {
                 // Handler might not be added yet, let's wait a bit
-                WSMC.debug("packet_handler not found immediately. Scheduling retry...");
+                // 2. 替换 WSMC → WSMCpaper
+                WSMCpaper.debug("packet_handler not found immediately. Scheduling retry...");
                 channel.eventLoop().execute(() -> {
                     try {
                         ChannelHandler handler = findConnectionHandler(channel);
                         if (handler != null) {
                             setAddress(handler, newAddress);
                         } else {
-                            WSMC.debug("Could not find packet_handler even after waiting. Pipeline: " + channel.pipeline().names());
+                            // 3. 替换 WSMC → WSMCpaper
+                            WSMCpaper.debug("Could not find packet_handler even after waiting. Pipeline: " + channel.pipeline().names());
                         }
                     } catch (Exception e) {
-                        WSMC.debug("Error while injecting IP after delay: " + e.getMessage());
+                        // 4. 替换 WSMC → WSMCpaper
+                        WSMCpaper.debug("Error while injecting IP after delay: " + e.getMessage());
                         e.printStackTrace();
                     }
                 });
@@ -36,7 +40,8 @@ public class IpInjection {
             }
             setAddress(connectionHandler, newAddress);
         } catch (Exception e) {
-            WSMC.debug("Error while injecting IP: " + e.getMessage());
+            // 5. 替换 WSMC → WSMCpaper
+            WSMCpaper.debug("Error while injecting IP: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -70,9 +75,11 @@ public class IpInjection {
         
         try {
             addressField.set(connection, newAddress);
-            WSMC.debug("Successfully injected IP: " + newAddress);
+            // 6. 替换 WSMC → WSMCpaper
+            WSMCpaper.debug("Successfully injected IP: " + newAddress);
         } catch (IllegalAccessException e) {
-            WSMC.debug("Failed to set address field. You might need JVM argument: --add-opens java.base/java.net=ALL-UNNAMED or similar.");
+            // 7. 替换 WSMC → WSMCpaper
+            WSMCpaper.debug("Failed to set address field. You might need JVM argument: --add-opens java.base/java.net=ALL-UNNAMED or similar.");
             throw e;
         }
     }
@@ -86,7 +93,8 @@ public class IpInjection {
                 Field field = getField(connectionClass, name);
                 if (field != null && SocketAddress.class.isAssignableFrom(field.getType())) {
                     field.setAccessible(true);
-                    WSMC.debug("Found address field by name: " + name);
+                    // 8. 替换 WSMC → WSMCpaper
+                    WSMCpaper.debug("Found address field by name: " + name);
                     return field;
                 }
             } catch (Exception ignored) {}
@@ -98,7 +106,8 @@ public class IpInjection {
             for (Field field : current.getDeclaredFields()) {
                 if (SocketAddress.class.isAssignableFrom(field.getType()) && !java.lang.reflect.Modifier.isStatic(field.getModifiers())) {
                     field.setAccessible(true);
-                    WSMC.debug("Found address field by type: " + field.getName() + " in " + current.getName());
+                    // 9. 替换 WSMC → WSMCpaper
+                    WSMCpaper.debug("Found address field by type: " + field.getName() + " in " + current.getName());
                     return field;
                 }
             }

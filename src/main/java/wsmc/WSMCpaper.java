@@ -1,6 +1,6 @@
 package wsmc;
 
-public class WSMC {
+public class WSMCpaper {
 	public static final String MODID = "wsmc";
 	private static boolean debug =
 			System.getProperty("wsmc.debug", "false").equalsIgnoreCase("true");
@@ -21,7 +21,7 @@ public class WSMC {
 	};
 
 	public static void setLogger(Logger logger) {
-		WSMC.logger = logger;
+		WSMCpaper.logger = logger;
 	}
 
 	public static void debug(String msg) {
