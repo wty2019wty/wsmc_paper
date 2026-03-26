@@ -51,7 +51,7 @@ public class ProtocolSniffer extends ByteToMessageDecoder {
     private boolean isHttp(int m1, int m2, int m3, int m4) {
         return m1 == 'G' && m2 == 'E' && m3 == 'T' && m4 == ' ' || // GET
                m1 == 'P' && m2 == 'O' && m3 == 'S' && m4 == 'T' || // POST
-               m1 == 'P' && m2 == 'U' && m3 = 'T' && m4 == ' ' || // PUT
+               m1 == 'P' && m2 == 'U' && m3 == 'T' && m4 == ' ' || // PUT
                m1 == 'H' && m2 == 'E' && m3 == 'A' && m4 == 'D' || // HEAD
                m1 == 'O' && m2 == 'P' && m3 == 'T' && m4 == 'I' || // OPTIONS
                m1 == 'D' && m2 == 'E' && m3 == 'L' && m4 == 'E' || // DELETE
