@@ -6,8 +6,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelInitializer;
 import org.bukkit.plugin.java.JavaPlugin;
-// 1. 核心修改：替换导入的类名
-import wsmc.WSMCpaper;
+import wsmc.WSMC;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -17,8 +16,7 @@ public class PaperEntry extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        // 2. 替换 WSMC → WSMCpaper
-        WSMCpaper.setLogger(new wsmc.Logger() {
+        WSMC.setLogger(new wsmc.Logger() {
             private final java.util.logging.Logger paperLogger = getLogger();
 
             @Override
@@ -32,12 +30,10 @@ public class PaperEntry extends JavaPlugin {
             }
         });
 
-        // 3. 替换 WSMC → WSMCpaper
-        WSMCpaper.info("Initializing WSMC for Paper...");
+        WSMC.info("Initializing WSMC for Paper...");
         try {
             inject();
-            // 4. 替换 WSMC → WSMCpaper
-            WSMCpaper.info("WSMC initialized successfully.");
+            WSMC.info("WSMC initialized successfully.");
         } catch (Exception e) {
             getLogger().severe("Failed to initialize WSMC: " + e.getMessage());
             e.printStackTrace();
@@ -67,15 +63,13 @@ public class PaperEntry extends JavaPlugin {
             throw new RuntimeException("Could not find MinecraftServer instance");
         }
         
-        // 5. 替换 WSMC → WSMCpaper
-        WSMCpaper.debug("Found MinecraftServer: " + minecraftServer.getClass().getName());
+        WSMC.debug("Found MinecraftServer: " + minecraftServer.getClass().getName());
 
         // Find ServerConnection in MinecraftServer - more comprehensive search
         Object serverConnection = null;
         
         // Log all available methods and fields for debugging
-        // 6. 替换 WSMC → WSMCpaper
-        WSMCpaper.debug("Searching for ServerConnection in " + minecraftServer.getClass().getName());
+        WSMC.debug("Searching for ServerConnection in " + minecraftServer.getClass().getName());
         
         // First try to find it via methods with more flexible matching
         for (Method method : minecraftServer.getClass().getMethods()) {
@@ -89,27 +83,23 @@ public class PaperEntry extends JavaPlugin {
                     Object result = method.invoke(minecraftServer);
                     if (result != null) {
                         String resultType = result.getClass().getSimpleName().toLowerCase();
-                        // 7. 替换 WSMC → WSMCpaper
-                        WSMCpaper.debug("Method " + method.getName() + " returns " + resultType);
+                        WSMC.debug("Method " + method.getName() + " returns " + resultType);
                         
                         if (resultType.contains("serverconnection") || resultType.contains("networkmanager")) {
                             serverConnection = result;
-                            // 8. 替换 WSMC → WSMCpaper
-                            WSMCpaper.debug("Found ServerConnection via method: " + method.getName() + " (type: " + result.getClass().getName() + ")");
+                            WSMC.debug("Found ServerConnection via method: " + method.getName() + " (type: " + result.getClass().getName() + ")");
                             break;
                         }
                     }
                 } catch (Exception e) {
-                    // 9. 替换 WSMC → WSMCpaper
-                    WSMCpaper.debug("Failed to invoke method " + method.getName() + ": " + e.getMessage());
+                    WSMC.debug("Failed to invoke method " + method.getName() + ": " + e.getMessage());
                 }
             }
         }
         
         // If not found via methods, try fields with more comprehensive search
         if (serverConnection == null) {
-            // 10. 替换 WSMC → WSMCpaper
-            WSMCpaper.debug("Searching fields for ServerConnection...");
+            WSMC.debug("Searching fields for ServerConnection...");
             for (Field field : minecraftServer.getClass().getDeclaredFields()) {
                 String fieldName = field.getName().toLowerCase();
                 String fieldType = field.getType().getSimpleName().toLowerCase();
@@ -122,19 +112,16 @@ public class PaperEntry extends JavaPlugin {
                         Object result = field.get(minecraftServer);
                         if (result != null) {
                             String resultType = result.getClass().getSimpleName().toLowerCase();
-                            // 11. 替换 WSMC → WSMCpaper
-                            WSMCpaper.debug("Field " + field.getName() + " (type: " + fieldType + ") contains " + resultType);
+                            WSMC.debug("Field " + field.getName() + " (type: " + fieldType + ") contains " + resultType);
                             
                             if (resultType.contains("serverconnection") || resultType.contains("networkmanager")) {
                                 serverConnection = result;
-                                // 12. 替换 WSMC → WSMCpaper
-                                WSMCpaper.debug("Found ServerConnection via field: " + field.getName() + " (type: " + result.getClass().getName() + ")");
+                                WSMC.debug("Found ServerConnection via field: " + field.getName() + " (type: " + result.getClass().getName() + ")");
                                 break;
                             }
                         }
                     } catch (Exception e) {
-                        // 13. 替换 WSMC → WSMCpaper
-                        WSMCpaper.debug("Failed to access field " + field.getName() + ": " + e.getMessage());
+                        WSMC.debug("Failed to access field " + field.getName() + ": " + e.getMessage());
                     }
                 }
             }
@@ -142,8 +129,7 @@ public class PaperEntry extends JavaPlugin {
 
         if (serverConnection == null) {
             // Last resort: try to find any field that might contain the server connection
-            // 14. 替换 WSMC → WSMCpaper
-            WSMCpaper.debug("Attempting last resort search for ServerConnection...");
+            WSMC.debug("Attempting last resort search for ServerConnection...");
             for (Field field : minecraftServer.getClass().getDeclaredFields()) {
                 try {
                     field.setAccessible(true);
@@ -152,8 +138,7 @@ public class PaperEntry extends JavaPlugin {
                         String resultType = result.getClass().getSimpleName().toLowerCase();
                         if (resultType.contains("server") && resultType.contains("connection")) {
                             serverConnection = result;
-                            // 15. 替换 WSMC → WSMCpaper
-                            WSMCpaper.debug("Found potential ServerConnection via last resort: " + field.getName() + " (type: " + result.getClass().getName() + ")");
+                            WSMC.debug("Found potential ServerConnection via last resort: " + field.getName() + " (type: " + result.getClass().getName() + ")");
                             break;
                         }
                     }
@@ -167,8 +152,7 @@ public class PaperEntry extends JavaPlugin {
                                      ". Available fields: " + getFieldNames(minecraftServer.getClass()));
         }
 
-        // 16. 替换 WSMC → WSMCpaper
-        WSMCpaper.debug("Found ServerConnection: " + serverConnection.getClass().getName());
+        WSMC.debug("Found ServerConnection: " + serverConnection.getClass().getName());
 
         // Find channels list in ServerConnection
         List<ChannelFuture> channels = null;
@@ -183,8 +167,7 @@ public class PaperEntry extends JavaPlugin {
                         List<?> list = (List<?>) obj;
                         if (!list.isEmpty() && list.get(0) instanceof ChannelFuture) {
                             channels = (List<ChannelFuture>) list;
-                            // 17. 替换 WSMC → WSMCpaper
-                            WSMCpaper.debug("Found channels via field: " + field.getName());
+                            WSMC.debug("Found channels via field: " + field.getName());
                             break;
                         }
                     }
@@ -203,8 +186,7 @@ public class PaperEntry extends JavaPlugin {
                         Object obj = field.get(serverConnection);
                         if (obj instanceof List) {
                             channels = (List<ChannelFuture>) obj;
-                            // 18. 替换 WSMC → WSMCpaper
-                            WSMCpaper.debug("Found channels via field name: " + name);
+                            WSMC.debug("Found channels via field name: " + name);
                             break;
                         }
                     }
@@ -216,8 +198,7 @@ public class PaperEntry extends JavaPlugin {
             throw new RuntimeException("Could not find channels list");
         }
 
-        // 19. 替换 WSMC → WSMCpaper
-        WSMCpaper.debug("Found " + channels.size() + " channels");
+        WSMC.debug("Found " + channels.size() + " channels");
 
         // Inject our handler into each channel
         for (ChannelFuture future : channels) {
@@ -232,19 +213,16 @@ public class PaperEntry extends JavaPlugin {
                                 @Override
                                 protected void initChannel(Channel ch) throws Exception {
                                     ch.pipeline().addFirst("wsmc_sniffer", new ProtocolSniffer());
-                                    // 20. 替换 WSMC → WSMCpaper
-                                    WSMCpaper.debug("Injected WSMC sniffer into new connection");
+                                    WSMC.debug("Injected WSMC sniffer into new connection");
                                 }
                             });
                         }
                         ctx.fireChannelRead(msg);
                     }
                 });
-                // 21. 替换 WSMC → WSMCpaper
-                WSMCpaper.debug("Successfully injected into channel: " + serverChannel);
+                WSMC.debug("Successfully injected into channel: " + serverChannel);
             } catch (Exception e) {
-                // 22. 替换 WSMC → WSMCpaper
-                WSMCpaper.debug("Failed to inject into channel: " + e.getMessage());
+                WSMC.debug("Failed to inject into channel: " + e.getMessage());
             }
         }
     }

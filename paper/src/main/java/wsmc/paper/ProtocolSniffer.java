@@ -5,9 +5,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
-// 1. 替换旧类导入为新类
-import wsmc.HttpServerHandlerpaper;
-import wsmc.WSMCpaper;
+import wsmc.HttpServerHandler;
+import wsmc.WSMC;
 import wsmc.HttpGetSniffer;
 
 import java.util.List;
@@ -25,24 +24,20 @@ public class ProtocolSniffer extends ByteToMessageDecoder {
         int magic4 = in.getUnsignedByte(in.readerIndex() + 3);
 
         if (isHttp(magic1, magic2, magic3, magic4)) {
-            // 2. 替换 WSMC → WSMCpaper
-            WSMCpaper.debug("Detected HTTP/WebSocket connection from " + ctx.channel().remoteAddress());
+            WSMC.debug("Detected HTTP/WebSocket connection from " + ctx.channel().remoteAddress());
             ctx.pipeline().addAfter(ctx.name(), "wsmc_http_codec", new HttpServerCodec());
             ctx.pipeline().addAfter("wsmc_http_codec", "wsmc_http_aggregator", new HttpObjectAggregator(65536));
-            // 3. 替换 HttpServerHandler → HttpServerHandlerpaper
-            ctx.pipeline().addAfter("wsmc_http_aggregator", "wsmc_http_handler", new HttpServerHandlerpaper(null));
+            ctx.pipeline().addAfter("wsmc_http_aggregator", "wsmc_http_handler", new HttpServerHandler(null));
             ctx.pipeline().remove(this);
         } else {
             if (HttpGetSniffer.disableVanillaTCP) {
-                // 4. 替换 WSMC → WSMCpaper
-                WSMCpaper.info(ctx.channel().remoteAddress().toString() +
+                WSMC.info(ctx.channel().remoteAddress().toString() +
                         " attemps to establish a Vanilla TCP connection which has been disabled by WSMC.");
                 ctx.close();
                 return;
             }
 
-            // 5. 替换 WSMC → WSMCpaper
-            WSMCpaper.debug("Detected Minecraft connection from " + ctx.channel().remoteAddress());
+            WSMC.debug("Detected Minecraft connection from " + ctx.channel().remoteAddress());
             ctx.pipeline().remove(this);
             out.add(in.readBytes(in.readableBytes()));
         }
