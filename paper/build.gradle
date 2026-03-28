@@ -1,0 +1,60 @@
+plugins {
+    id 'java'
+    id 'com.gradleup.shadow' version '8.3.0'
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        name = "papermc-repo"
+        url = "https://repo.papermc.io/repository/maven-public/"
+    }
+    maven {
+        name = "sonatype"
+        url = "https://oss.sonatype.org/content/groups/public/"
+    }
+}
+
+dependencies {
+    compileOnly "io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT"
+    compileOnly "io.netty:netty-all:4.1.97.Final"
+    
+    implementation("io.netty:netty-codec-http:4.1.97.Final") {
+        exclude group: 'io.netty', module: 'netty-transport'
+        exclude group: 'io.netty', module: 'netty-buffer'
+        exclude group: 'io.netty', module: 'netty-common'
+        exclude group: 'io.netty', module: 'netty-resolver'
+        exclude group: 'io.netty', module: 'netty-handler'
+        exclude group: 'io.netty', module: 'netty-codec'
+    }
+
+    // Test dependencies
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation "io.netty:netty-all:4.1.97.Final"
+}
+
+/* sourceSets {
+    main {
+        java {
+            srcDir '../src/main/java'
+        }
+    }
+} */
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+test {
+    useJUnitPlatform()
+}

@@ -1,1 +1,3 @@
-Support 1.21.11
+Support 1.20.4-1.21.11 Paper
+- Fix: Included external Netty HTTP Codec (4.1.97.Final) to resolve missing dependency issues on some server versions.
+- Fix: Ensured compatibility with Paper servers lacking built-in netty-codec-http.
